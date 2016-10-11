@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import sys
+import click
+import yaml
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+@click.group()
+def cli():
+  pass
+
+def test_uniqueness(data):
+  dic = {}
+
+  for datum in data:
+    if not datum['id'] in dic:
+      dic[datum['id']] = [datum]
+    else:
+      dic[datum['id']] += datum
+
+  dups = filter(lambda l: len(l) > 1, dic.values())
+
+  if not dups:
+    return True
+
+  return '\n'.join(['duplicated IDs found:'] + map(lambda d: d[0]['id'], dups))
+
+@cli.command()
+@click.option('--dbfile', default='animedb.yml', help='Anime DB file to test.')
+def test(dbfile):
+  data = yaml.load(file(dbfile, 'r'))
+  testers = filter(lambda (k, v): k.startswith('test_'), list(globals().items()))
+  errors = []
+
+  for name, tester in testers:
+    result = tester(data)
+
+    if result is not True:
+      errors.append('{0} failed: '.format(name) + result)
+
+  if errors:
+    for error in errors:
+      eprint(error)
+    sys.exit(1)
+
+if __name__ == '__main__':
+  cli()

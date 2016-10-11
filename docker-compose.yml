@@ -1,0 +1,17 @@
+vendors:
+  image: python:2.7.12
+  working_dir: /mnt
+  volumes:
+    - .:/mnt
+  environment:
+    PYTHONUSERBASE: /mnt/vendor
+  command: pip install -r requirements.txt --user --upgrade
+
+dev:
+  image: python:2.7.12
+  working_dir: /mnt
+  volumes:
+    - .:/mnt
+  environment:
+    PYTHONUSERBASE: /mnt/vendor
+  command: bash
