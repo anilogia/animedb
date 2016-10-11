@@ -37,3 +37,13 @@
 | **madb_uri**       | MADB URI            |                                                  |
 | **official_uri**   | 公式URI              |                                                  |
 | **memo**           | メモ                 |                                                  |
+
+## 出典
+
+本データベースは、[100年分のアニメ作品リストをExcelデータで公開した - 本しゃぶり](http://honeshabri.hatenablog.com/entry/animedb_shared)で述べた通り、2015年11月1日時点の[メディア芸術データベース](https://mediaarts-db.jp/)（[利用規約](https://mediaarts-db.jp/user_terms.html)）の内容から、[『アニメ作品事典―解説・原作データ付き』](https://www.amazon.co.jp/dp/4816922687)（2010、スティングレイ、 日外アソシエーツ）や Wikipedia などを参考に大幅に加筆修正を行ったものである。
+2015年11月1日時点でメディア芸術データベースに存在する作品については、**madb_uri** に当該作品のメディア芸術データベースにおける URI が記載されている。
+
+## ライセンス
+
+本ソフトウェア（ソースコードおよびデータベース）の利用は[MIT ライセンス](https://github.com/anilogia/animedb/blob/master/LICENSE)に基づく。
+また、[メディア芸術データベース利用規約](https://mediaarts-db.jp/user_terms.html)に準ずること。
