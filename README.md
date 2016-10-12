@@ -2,6 +2,8 @@
 
 ![Anilogia Logo](/anilogia.png)
 
+[![CircleCI](https://circleci.com/gh/anilogia/animedb.svg?style=svg)](https://circleci.com/gh/anilogia/animedb)
+
 アニメ作品リストデータベース。本データベースの背景は以下の記事を参照すること。
 
 - [アニメ初心者におすすめしたい10137作品からの250選（前編） - 本しゃぶり](http://honeshabri.hatenablog.com/entry/anime-100years-1)
