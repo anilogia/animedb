@@ -7,7 +7,7 @@ import click
 import yaml
 
 def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+  print(*args, file=sys.stderr, **kwargs)
 
 @click.group()
 def cli():
