@@ -4,7 +4,12 @@ from __future__ import print_function
 
 import sys
 import click
-import yaml
+
+from yaml import load
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 
 DEFAULT_DBFILE = 'animedb.yml'
 
@@ -12,7 +17,7 @@ def eprint(*args, **kwargs):
   print(*args, file=sys.stderr, **kwargs)
 
 def load_db(dbfile):
-  return yaml.load(dbfile)
+  return load(dbfile, Loader=Loader)
 
 @click.group()
 def cli():
