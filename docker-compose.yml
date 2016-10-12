@@ -5,6 +5,7 @@ vendors:
     - .:/mnt
   environment:
     PYTHONUSERBASE: /mnt/vendor
+    PYTHONIOENCODING: UTF-8
   command: pip install -r requirements.txt --user --upgrade
 
 dev:
@@ -14,4 +15,5 @@ dev:
     - .:/mnt
   environment:
     PYTHONUSERBASE: /mnt/vendor
+    PYTHONIOENCODING: UTF-8
   command: bash

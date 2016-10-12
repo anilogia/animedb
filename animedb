@@ -12,6 +12,7 @@ except ImportError:
     from yaml import Loader
 
 DEFAULT_DBFILE = 'animedb.yml'
+DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 
 def eprint(*args, **kwargs):
   print(*args, file=sys.stderr, **kwargs)
@@ -19,9 +20,32 @@ def eprint(*args, **kwargs):
 def load_db(dbfile):
   return load(dbfile, Loader=Loader)
 
+def format_date(year, month, day):
+  return u'/'.join(map(unicode, filter(bool, [year, month, day])))
+
+def sort_data(data, keys=DEFAULT_SORT_KEYS):
+  return sorted(data, key = lambda datum: map(lambda k: datum[k], keys))
+
 @click.group()
 def cli():
   pass
+
+@cli.command('list')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
+@click.option('--sort', default=None, type=str, help='Comma-separated list of sorting keys.')
+def listdb(dbfile, sort):
+  data = load_db(dbfile)
+
+  if sort:
+    data = sort_data(data, sort.split(','))
+
+  for datum in data:
+    print(u','.join([
+      datum['id'],
+      datum['medium'],
+      format_date(datum['started_year'], datum['started_month'], datum['started_day']),
+      format_date(datum['ended_year'], datum['ended_month'], datum['ended_day'])
+    ]))
 
 def test_uniqueness(data):
   dic = {}
