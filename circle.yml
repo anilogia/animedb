@@ -1,0 +1,12 @@
+machine:
+  python:
+    version: 2.7.12
+  timezone: Asia/Tokyo
+
+database:
+  override:
+    - echo 'No database setup'
+
+test:
+  override:
+    - ./animedb test
