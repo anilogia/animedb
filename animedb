@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+ # -*- coding: utf-8 -*-
 
 from __future__ import print_function
 
@@ -11,8 +12,22 @@ try:
 except ImportError:
     from yaml import Loader
 
+from terminaltables import SingleTable
+
 DEFAULT_DBFILE = 'animedb.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
+
+MEDIA = [
+  u'TV',
+  u'OVA',
+  u'劇場',
+  u'TVスペシャル',
+  u'その他',
+  u'イベント',
+  u'個人制作',
+  u'不明',
+  u'該当なし'
+]
 
 def eprint(*args, **kwargs):
   print(*args, file=sys.stderr, **kwargs)
@@ -23,12 +38,43 @@ def load_db(dbfile):
 def format_date(year, month, day):
   return u'/'.join(map(unicode, filter(bool, [year, month, day])))
 
+def format_percentage(percentage):
+  return '{0:.2%}'.format(percentage)
+
 def sort_data(data, keys=DEFAULT_SORT_KEYS):
   return sorted(data, key = lambda datum: map(lambda k: datum[k], keys))
 
 @click.group()
 def cli():
   pass
+
+@cli.command('stats')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to show statistics.')
+def stats(dbfile):
+  data = load_db(dbfile)
+  count = {}
+
+  for medium in MEDIA:
+    count[medium] = 0
+
+  for datum in data:
+    if not datum['medium'] in MEDIA:
+      count[u'該当なし'] += 1
+    else:
+      count[datum['medium']] += 1
+
+  total_count = len(data)
+  table_rows = [['Medium', 'Count', 'Percent [%]']]
+
+  for medium in MEDIA:
+    table_rows.append([medium, count[medium], format_percentage(count[medium] * 1.0 / total_count)])
+
+  table_rows.append(['Total', total_count, format_percentage(1)])
+
+  table = SingleTable(table_rows)
+  table.inner_footing_row_border = True
+
+  print(table.table)
 
 @cli.command('list')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
