@@ -47,6 +47,11 @@
 本データベースは、[100年分のアニメ作品リストをExcelデータで公開した - 本しゃぶり](http://honeshabri.hatenablog.com/entry/animedb_shared)で述べた通り、2015年11月1日時点の[メディア芸術データベース](https://mediaarts-db.jp/)（[利用規約](https://mediaarts-db.jp/user_terms.html)）の内容から、[『アニメ作品事典―解説・原作データ付き』](https://www.amazon.co.jp/dp/4816922687)（2010、スティングレイ、 日外アソシエーツ）や Wikipedia などを参考に大幅に加筆修正を行ったものである。
 2015年11月1日時点でメディア芸術データベースに存在する作品については、**madb_uri** に当該作品のメディア芸術データベースにおける URI が記載されている。
 
+## Anime DB に貢献する
+
+本データベースは現状 GitHub 上（[anilogia/animedb](https://github.com/anilogia/animedb)）でのコラボレーションを行っている。
+本データベースに関することなら、データの加筆・修正はもちろん、データの編集方針や今後の活動についての質問・提案の [issue](https://github.com/anilogia/animedb/issues) および [Pull Request](https://github.com/anilogia/animedb/pulls) を歓迎する。
+
 ## ライセンス
 
 本ソフトウェア（ソースコードおよびデータベース）の利用は[MIT ライセンス](https://github.com/anilogia/animedb/blob/master/LICENSE)に基づく。
