@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import sys
+import re
 import click
 
 from yaml import load
@@ -19,6 +20,7 @@ from terminaltables import SingleTable
 DEFAULT_DBFILE = 'animedb.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 DEFAULT_MERGE_KEY = 'madb_id'
+DEFAULT_LIST_FORMAT = 'default'
 
 MEDIA = [
   u'TV',
@@ -103,15 +105,7 @@ def stats(dbfile):
 
   print(table.table)
 
-@cli.command('list')
-@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
-@click.option('--sort', default=None, type=str, help='Comma-separated list of sorting keys.')
-def listdb(dbfile, sort):
-  data = load_db(dbfile)
-
-  if sort:
-    data = sort_data(data, sort.split(','))
-
+def listdb_default(data):
   for datum in data:
     print(u','.join([
       datum['id'],
@@ -119,6 +113,37 @@ def listdb(dbfile, sort):
       format_date(datum['started_year'], datum['started_month'], datum['started_day']),
       format_date(datum['ended_year'], datum['ended_month'], datum['ended_day'])
     ]))
+
+def listdb_google_ime(data):
+  emitted_entry = {}
+
+  for datum in data:
+    if datum['ruby'] and datum['title']:
+      ruby = re.sub(ur'[ 　・「」\[\]［］"”“a-zA-Z0-9]', '', datum['ruby'])
+      title = datum['title']
+      entry = u'\t'.join([ruby, title, u'固有名詞'])
+
+      if entry not in emitted_entry:
+        print(entry)
+        emitted_entry[entry] = True
+
+@cli.command('list')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
+@click.option('--sort', default=None, type=str, help='Comma-separated list of sorting keys.')
+@click.option('--format', default=DEFAULT_LIST_FORMAT, type=str, help='A string to specify list format.')
+def listdb(dbfile, sort, format):
+  lister = globals().get('listdb_{0}'.format(format), None)
+
+  if not lister:
+    eprint('unknown list format: ', format)
+    sys.exit(1)
+
+  data = load_db(dbfile)
+
+  if sort:
+    data = sort_data(data, sort.split(','))
+
+  lister(data)
 
 def test_uniqueness(data):
   dic = {}
