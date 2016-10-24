@@ -12,10 +12,13 @@ try:
 except ImportError:
     from yaml import Loader
 
+import ruamel.yaml
+
 from terminaltables import SingleTable
 
 DEFAULT_DBFILE = 'animedb.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
+DEFAULT_MERGE_KEY = 'madb_id'
 
 MEDIA = [
   u'TV',
@@ -35,6 +38,12 @@ def eprint(*args, **kwargs):
 def load_db(dbfile):
   return load(dbfile, Loader=Loader)
 
+def load_db_roundtrip(dbfile):
+  return ruamel.yaml.load(dbfile, ruamel.yaml.RoundTripLoader)
+
+def dump_db_roundtrip(data, outfile):
+  ruamel.yaml.dump(data, outfile, Dumper=ruamel.yaml.RoundTripDumper, allow_unicode=True)
+
 def format_date(year, month, day):
   return u'/'.join(map(unicode, filter(bool, [year, month, day])))
 
@@ -44,9 +53,27 @@ def format_percentage(percentage):
 def sort_data(data, keys=DEFAULT_SORT_KEYS):
   return sorted(data, key = lambda datum: map(lambda k: datum[k], keys))
 
+def merge_data(data, source, key=DEFAULT_MERGE_KEY):
+  for datum in data:
+    if datum[key] in source:
+      datum.update(source[datum[key]])
+
+  return data
+
 @click.group()
 def cli():
   pass
+
+@cli.command('merge')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to merge in.')
+@click.option('--key', default=DEFAULT_MERGE_KEY, type=str, help='Merge key.')
+@click.argument('sourcefile', type=click.File('r'))
+@click.argument('outputfile', type=click.File('w'))
+def merge(dbfile, key, sourcefile, outputfile):
+  data = load_db_roundtrip(dbfile)
+  source = load_db_roundtrip(sourcefile)
+
+  dump_db_roundtrip(merge_data(data, source, key), outputfile)
 
 @cli.command('stats')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to show statistics.')
