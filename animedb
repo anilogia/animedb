@@ -161,6 +161,18 @@ def test_uniqueness(data):
 
   return '\n'.join(['duplicated IDs found:'] + map(lambda d: d[0]['id'], dups))
 
+# def test_ruby(data):
+#   errors = []
+
+#   for datum in data:
+#     if datum['ruby'] and re.search(ur'[^ァ-ヴー ]', datum['ruby']):
+#       errors.append(datum['ruby'])
+
+#   if not errors:
+#     return True
+
+#   return '\n'.join(['{0} invalid rubies found:'.format(len(errors))] + errors)
+
 @cli.command()
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to test.')
 def test(dbfile):
