@@ -6,6 +6,7 @@ from __future__ import print_function
 import sys
 import re
 import click
+import json
 
 from yaml import load
 try:
@@ -18,6 +19,8 @@ import ruamel.yaml
 from terminaltables import SingleTable
 
 DEFAULT_DBFILE = 'animedb.yml'
+DEFAULT_MADB_FILE = 'madb.json'
+DEFAULT_MADB_OUTPUT_FILE = 'madb-converted.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 DEFAULT_MERGE_KEY = 'madb_id'
 DEFAULT_LIST_FORMAT = 'default'
@@ -43,6 +46,11 @@ def load_db(dbfile):
 def load_db_roundtrip(dbfile):
   return ruamel.yaml.load(dbfile, ruamel.yaml.RoundTripLoader)
 
+# Load JSON MADB data output by:
+#   https://github.com/builtinnya/mediaarts-db-crawler
+def load_madb(dbfile):
+  return json.load(dbfile)
+
 def dump_db_roundtrip(data, outfile):
   ruamel.yaml.dump(data, outfile, Dumper=ruamel.yaml.RoundTripDumper, allow_unicode=True)
 
@@ -62,9 +70,65 @@ def merge_data(data, source, key=DEFAULT_MERGE_KEY):
 
   return data
 
+# Takes a list and returns a list which contains only truthy values in the given list.
+def compact(l):
+  return [v for v in l if v]
+
 @click.group()
 def cli():
   pass
+
+@cli.command('madb')
+@click.option('--dbfile', default=DEFAULT_MADB_FILE, type=click.File('r'), help='MADB JSON data from crawler.')
+@click.option('--outputfile', default=DEFAULT_MADB_OUTPUT_FILE, type=click.File('w'), help='Output file name.')
+def madb(dbfile, outputfile):
+  # Takes an episode and pre-parsed times and returns the start and end time of
+  # the given episode.
+  def parse_time(episode, times):
+    episode_seq = re.search(ur'\d+', episode.get(u'各話表記', u''))
+
+    if not times or not episode_seq:
+      return None, None
+
+    episode_seq = int(episode_seq.group(0))
+
+    for first, last, start_h, start_m, end_h, end_m in times:
+      if int(first) <= episode_seq and episode_seq <= int(last):
+        return u':'.join([start_h, start_m]), u':'.join([end_h, end_m])
+
+    return None, None
+
+  data = load_madb(dbfile)
+  times_re = re.compile(ur'（(\d+)(?:話|回)～(\d+)(?:話|回)）.*?(\d{1,2})時(\d{1,2})分～(\d{1,2})時(\d{1,2})分')
+  result = {}
+
+  for datum in data:
+    if datum.get(u'アニメシリーズID') and datum.get(u'各話情報'):
+      times_raw = datum.get(u'放送期間など', u'')
+      times = times_re.findall(times_raw)
+      episodes = []
+
+      for episode in datum[u'各話情報']:
+        prefix = episode.get(u'各話表記')
+        title = episode.get(u'各話タイトル')
+        literal_title = ' '.join(compact([prefix, title]))
+
+        start_time, end_time = parse_time(episode, times)
+        started_at = ' '.join(compact([episode.get(u'公開日'), start_time]))
+        ended_at = ' '.join(compact([episode.get(u'公開日'), end_time]))
+
+        episodes.append({
+          'prefix': prefix,
+          'title': title,
+          'literal_title': literal_title,
+          'started_at': started_at,
+          'ended_at': ended_at,
+          'ruby': ''
+        })
+
+      result[datum[u'アニメシリーズID']] = { 'episodes': episodes }
+
+  dump_db_roundtrip(result, outputfile)
 
 @cli.command('merge')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to merge in.')
