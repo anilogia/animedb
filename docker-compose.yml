@@ -17,3 +17,13 @@ dev:
     PYTHONUSERBASE: /mnt/vendor
     PYTHONIOENCODING: UTF-8
   command: bash
+
+test:
+  image: python:2.7.12
+  working_dir: /mnt
+  volumes:
+    - .:/mnt
+  environment:
+    PYTHONUSERBASE: /mnt/vendor
+    PYTHONIOENCODING: UTF-8
+  command: ./animedb test
