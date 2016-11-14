@@ -226,14 +226,22 @@ def test_uniqueness(data):
   return '\n'.join(['duplicated IDs found:'] + map(lambda d: d[0]['id'], dups))
 
 def test_ruby(data):
+  def anime_str(datum):
+    return (datum['madb_id'] or '') + ':' + datum['ruby']
+
+  def is_error(datum):
+    return (re.search(ur'[^ァ-ヴー ]', datum['ruby']) or
+            re.search(ur'[ ]{2,}', datum['ruby']) or
+            re.search(ur'[ー]{2,}', datum['ruby']) or
+            re.search(ur'^[ ]+', datum['ruby']) or
+            re.search(ur'[ ]+$', datum['ruby']) or
+            re.search(ur'^[ー]+', datum['ruby']))
+
   errors = []
 
   for datum in data:
-    if datum['ruby'] and re.search(ur'[^ァ-ヴー ]', datum['ruby']):
-      if datum['madb_id']:
-        errors.append(datum['madb_id'] + ':' + datum['ruby'])
-      else:
-        errors.append(':' + datum['ruby'])
+    if datum['ruby'] and is_error(datum):
+      errors.append(anime_str(datum))
 
   if not errors:
     return True
