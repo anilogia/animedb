@@ -183,7 +183,7 @@ def listdb_google_ime(data):
 
   for datum in data:
     if datum['ruby'] and datum['title']:
-      ruby = re.sub(ur'[ 　・「」\[\]［］"”“a-zA-Z0-9]', '', datum['ruby'])
+      ruby = re.sub(ur'[ ]', '', datum['ruby'])
       title = datum['title']
       entry = u'\t'.join([ruby, title, u'固有名詞'])
 
