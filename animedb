@@ -227,7 +227,7 @@ def test_uniqueness(data):
 
 def test_ruby(data):
   def anime_str(datum):
-    return (datum['madb_id'] or '') + ':' + datum['ruby']
+    return (datum['madb_id'] or '') + ':' + (datum['ruby'] or '') + ':' + (datum['title'] or '')
 
   def is_error(datum):
     return (re.search(ur'[^ァ-ヴー ]', datum['ruby']) or
@@ -240,7 +240,7 @@ def test_ruby(data):
   errors = []
 
   for datum in data:
-    if datum['ruby'] and is_error(datum):
+    if (not datum['ruby']) or is_error(datum):
       errors.append(anime_str(datum))
 
   if not errors:
