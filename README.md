@@ -16,9 +16,14 @@
 
 `animedb.yml` がデータベース本体である。今のところ、本データベースを利用・編集する場合、このファイルだけで完結する。
 
+## 編集規則
+
+[Anime DB 編集規則](https://github.com/anilogia/animedb/blob/master/docs/rules.md)を参照すること。
+
 ## `animedb.yml`
 
 `animedb.yml` は、アニメ作品データのリストからなる。各アニメデータの構造を以下の表に示す。
+詳細は [Anime DB 編集規則](https://github.com/anilogia/animedb/blob/master/docs/rules.md)を参照すること。
 
 |     **キー名**     |      **項目名**      |                     **説明**                     |
 |:------------------:|:--------------------:|:------------------------------------------------:|
