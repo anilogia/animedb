@@ -69,6 +69,10 @@
 本データベースは現状 GitHub 上（[anilogia/animedb](https://github.com/anilogia/animedb)）でのコラボレーションを行っている。
 本データベースに関することなら、データの加筆・修正はもちろん、データの編集方針や今後の活動についての質問・提案の [issue](https://github.com/anilogia/animedb/issues) および [Pull Request](https://github.com/anilogia/animedb/pulls) を歓迎する。
 
+## おまけ
+
+- [Google IME 用の辞書](https://github.com/anilogia/animedb/blob/master/dict/google-ime-dict.txt)
+
 ## ライセンス
 
 本ソフトウェア（ソースコードおよびデータベース）の利用は[MIT ライセンス](https://github.com/anilogia/animedb/blob/master/LICENSE)に基づく。
