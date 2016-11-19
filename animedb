@@ -25,6 +25,7 @@ DEFAULT_MADB_OUTPUT_FILE = 'madb-converted.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 DEFAULT_MERGE_KEY = 'madb_id'
 DEFAULT_LIST_FORMAT = 'default'
+DEFAULT_MADB_COMPARE_OUTPUT_FILE = './madb/comparison.csv'
 
 MEDIA = [
   u'TV',
@@ -97,6 +98,33 @@ def merge_data(data, source, key=DEFAULT_MERGE_KEY):
 def compact(l):
   return [v for v in l if v]
 
+def unicode_csv_dict_reader(utf8_file, **kwargs):
+  reader = csv.DictReader(utf8_file, **kwargs)
+
+  for row in reader:
+    yield { unicode(key, 'utf-8'): unicode(value, 'utf-8') for key, value in row.iteritems() }
+
+def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
+  # Excel needs BOM to open UTF-8 file properly.
+  # Use LibreOffice instead if you are using Excel for Mac.
+  utf8_file.write(u'\ufeff'.encode('utf-8'))
+
+  writer = csv.DictWriter(utf8_file, fieldnames, **kwargs)
+
+  writer.writeheader()
+
+  for datum in data:
+    for key, val in list(datum.items()):
+      if isinstance(key, unicode):
+        key = key.encode('utf-8')
+
+      if isinstance(val, unicode):
+        val = val.encode('utf-8')
+
+      datum[key] = val
+
+    writer.writerow({ key: datum.get(key) for key in fieldnames })
+
 @click.group()
 def cli():
   pass
@@ -163,6 +191,61 @@ def merge(dbfile, key, sourcefile, outputfile):
   source = load_db_roundtrip(sourcefile)
 
   dump_db_roundtrip(merge_data(data, source, key), outputfile)
+
+@cli.command('compare_madbs')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to compare')
+@click.option('--outputfile', default=DEFAULT_MADB_COMPARE_OUTPUT_FILE, type=click.File('w'), help='Output file name.')
+@click.argument('madb_files', nargs=-1, type=click.File('r'))
+def compare_madbs(dbfile, outputfile, madb_files):
+  anime_db = load_db(dbfile)
+  madbs = []
+
+  for madb_file in madb_files:
+    madb = {}
+
+    for row in unicode_csv_dict_reader(madb_file):
+      madb_id = row[u'アニメシリーズID']
+
+      # Skip records that don't have madb_id
+      if not madb_id:
+        continue
+
+      madb[madb_id] = row
+
+    madbs.append(madb)
+
+  comp_fieldnames = []
+
+  for i in range(len(madbs)):
+    comp_fieldnames += [
+      u'madb_{0}_title'.format(i + 1),
+      u'madb_{0}_ruby'.format(i + 1)
+    ]
+
+  comp_fieldnames += [u'animedb_title', u'animedb_ruby', u'madb_id', u'madb_uri']
+
+  comp_data = []
+
+  for datum in anime_db:
+    madb_id = datum.get(u'madb_id')
+
+    comp_datum = {
+      u'animedb_title': datum.get(u'title'),
+      u'animedb_ruby': datum.get(u'ruby'),
+      u'madb_id': madb_id,
+      u'madb_uri': datum.get(u'madb_uri')
+    }
+
+    for i, madb in enumerate(madbs):
+      if (not madb_id) or (not madb_id in madb):
+        continue
+
+      comp_datum[u'madb_{0}_title'.format(i + 1)] = madb[madb_id][u'タイトル']
+      comp_datum[u'madb_{0}_ruby'.format(i + 1)] = madb[madb_id][u'よみがな']
+
+    comp_data.append(comp_datum)
+
+  unicode_csv_dict_writer(outputfile, comp_fieldnames, comp_data)
 
 @cli.command('stats')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to show statistics.')
