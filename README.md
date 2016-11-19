@@ -72,6 +72,7 @@
 ## おまけ
 
 - [Google IME 用の辞書](https://github.com/anilogia/animedb/blob/master/dict/google-ime-dict.txt)
+- [Anime DB の一部を CSV フォーマットにしたもの](https://github.com/anilogia/animedb/blob/master/csv/animes.csv)
 
 ## ライセンス
 
