@@ -7,6 +7,7 @@ import sys
 import re
 import click
 import json
+import csv
 
 from yaml import load
 try:
@@ -35,6 +36,28 @@ MEDIA = [
   u'個人制作',
   u'不明',
   u'該当なし'
+]
+
+CSV_FIELDNAMES = [
+  u'madb_id',
+  u'medium',
+  u'duplicated',
+  u'id',
+  u'title',
+  u'suffix',
+  u'ruby',
+  u'started_year',
+  u'started_month',
+  u'started_day',
+  u'ended_year',
+  u'ended_month',
+  u'ended_day',
+  u'broadcast',
+  u'author',
+  u'original_title',
+  u'madb_uri',
+  u'official_uri',
+  u'memo'
 ]
 
 def eprint(*args, **kwargs):
@@ -190,6 +213,19 @@ def listdb_google_ime(data):
       if entry not in emitted_entry:
         print(entry)
         emitted_entry[entry] = True
+
+def listdb_csv(data):
+  writer = csv.DictWriter(sys.stdout, fieldnames=CSV_FIELDNAMES)
+
+  writer.writeheader()
+
+  for datum in data:
+    for key, val in list(datum.items()):
+      if isinstance(val, unicode):
+        val = val.encode('utf-8')
+      datum[key] = val
+
+    writer.writerow({ key: datum[key] for key in CSV_FIELDNAMES })
 
 @cli.command('list')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
