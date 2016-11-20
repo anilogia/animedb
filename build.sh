@@ -23,3 +23,9 @@ echo -n 'Generating CSV files...'
 $animedb_cmd list --format=csv > ./csv/animes.csv
 
 echo 'done.'
+
+echo -n 'Generating comparison files...'
+
+$animedb_cmd compare_madbs ./madb/madb-basic-info-2015-11-01.csv ./madb/madb-basic-info-2016-10-23.csv
+
+echo 'done.'
