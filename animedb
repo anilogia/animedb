@@ -19,6 +19,8 @@ import ruamel.yaml
 
 from terminaltables import SingleTable
 
+import shortuuid
+
 DEFAULT_DBFILE = 'animedb.yml'
 DEFAULT_MADB_FILE = 'madb.json'
 DEFAULT_MADB_OUTPUT_FILE = 'madb-converted.yml'
@@ -26,6 +28,8 @@ DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 DEFAULT_MERGE_KEY = 'madb_id'
 DEFAULT_LIST_FORMAT = 'default'
 DEFAULT_MADB_COMPARE_OUTPUT_FILE = './madb/comparison.csv'
+DEFAULT_ID_NUM = 5
+ID_LENGTH = 11
 
 MEDIA = [
   u'TV',
@@ -104,6 +108,11 @@ def unicode_csv_dict_reader(utf8_file, **kwargs):
   for row in reader:
     yield { unicode(key, 'utf-8'): unicode(value, 'utf-8') for key, value in row.iteritems() }
 
+def generate_id():
+  s = shortuuid.uuid()
+
+  return s[:ID_LENGTH]
+
 def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
   # Excel needs BOM to open UTF-8 file properly.
   # Use LibreOffice instead if you are using Excel for Mac.
@@ -128,6 +137,12 @@ def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
 @click.group()
 def cli():
   pass
+
+@cli.command('generate_ids')
+@click.option('--num', default=DEFAULT_ID_NUM, help='The number of IDs to be generated.')
+def generate_ids(num):
+  for _ in range(num):
+    print(generate_id())
 
 @cli.command('madb')
 @click.option('--dbfile', default=DEFAULT_MADB_FILE, type=click.File('r'), help='MADB JSON data from crawler.')
