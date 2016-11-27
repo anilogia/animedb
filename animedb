@@ -22,6 +22,7 @@ from terminaltables import SingleTable
 import shortuuid
 
 DEFAULT_DBFILE = 'animedb.yml'
+DEFAULT_CONVERTED_FILE = 'animedb.converted.yml'
 DEFAULT_MADB_FILE = 'madb.json'
 DEFAULT_MADB_OUTPUT_FILE = 'madb-converted.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
@@ -30,6 +31,7 @@ DEFAULT_LIST_FORMAT = 'default'
 DEFAULT_MADB_COMPARE_OUTPUT_FILE = './madb/comparison.csv'
 DEFAULT_ID_NUM = 5
 ID_LENGTH = 11
+BASE57_CHARACTERS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 MEDIA = [
   u'TV',
@@ -113,6 +115,9 @@ def generate_id():
 
   return s[:ID_LENGTH]
 
+def is_id(s):
+  return bool(re.match(ur'^[{0}]{{{1}}}$'.format(BASE57_CHARACTERS, ID_LENGTH), s))
+
 def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
   # Excel needs BOM to open UTF-8 file properly.
   # Use LibreOffice instead if you are using Excel for Mac.
@@ -143,6 +148,20 @@ def cli():
 def generate_ids(num):
   for _ in range(num):
     print(generate_id())
+
+@cli.command('attach_ids')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to attach IDs to.')
+@click.option('--outputfile', default=DEFAULT_CONVERTED_FILE, type=click.File('w'), help='Output file name.')
+def attach_ids(dbfile, outputfile):
+  data = load_db_roundtrip(dbfile)
+
+  for datum in data:
+    current_id = datum.get(u'id')
+
+    if not current_id or not is_id(current_id):
+      datum[u'id'] = generate_id()
+
+  dump_db_roundtrip(data, outputfile)
 
 @cli.command('madb')
 @click.option('--dbfile', default=DEFAULT_MADB_FILE, type=click.File('r'), help='MADB JSON data from crawler.')
