@@ -19,13 +19,19 @@ import ruamel.yaml
 
 from terminaltables import SingleTable
 
+import shortuuid
+
 DEFAULT_DBFILE = 'animedb.yml'
+DEFAULT_CONVERTED_FILE = 'animedb.converted.yml'
 DEFAULT_MADB_FILE = 'madb.json'
 DEFAULT_MADB_OUTPUT_FILE = 'madb-converted.yml'
 DEFAULT_SORT_KEYS = ['started_year', 'started_month', 'started_day']
 DEFAULT_MERGE_KEY = 'madb_id'
 DEFAULT_LIST_FORMAT = 'default'
 DEFAULT_MADB_COMPARE_OUTPUT_FILE = './madb/comparison.csv'
+DEFAULT_ID_NUM = 5
+ID_LENGTH = 11
+BASE57_CHARACTERS = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 MEDIA = [
   u'TV',
@@ -104,6 +110,14 @@ def unicode_csv_dict_reader(utf8_file, **kwargs):
   for row in reader:
     yield { unicode(key, 'utf-8'): unicode(value, 'utf-8') for key, value in row.iteritems() }
 
+def generate_id():
+  s = shortuuid.uuid()
+
+  return s[:ID_LENGTH]
+
+def is_id(s):
+  return bool(re.match(ur'^[{0}]{{{1}}}$'.format(BASE57_CHARACTERS, ID_LENGTH), s))
+
 def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
   # Excel needs BOM to open UTF-8 file properly.
   # Use LibreOffice instead if you are using Excel for Mac.
@@ -128,6 +142,26 @@ def unicode_csv_dict_writer(utf8_file, fieldnames, data, **kwargs):
 @click.group()
 def cli():
   pass
+
+@cli.command('generate_ids')
+@click.option('--num', default=DEFAULT_ID_NUM, help='The number of IDs to be generated.')
+def generate_ids(num):
+  for _ in range(num):
+    print(generate_id())
+
+@cli.command('attach_ids')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to attach IDs to.')
+@click.option('--outputfile', default=DEFAULT_CONVERTED_FILE, type=click.File('w'), help='Output file name.')
+def attach_ids(dbfile, outputfile):
+  data = load_db_roundtrip(dbfile)
+
+  for datum in data:
+    current_id = datum.get(u'id')
+
+    if not current_id or not is_id(current_id):
+      datum[u'id'] = generate_id()
+
+  dump_db_roundtrip(data, outputfile)
 
 @cli.command('madb')
 @click.option('--dbfile', default=DEFAULT_MADB_FILE, type=click.File('r'), help='MADB JSON data from crawler.')
@@ -328,7 +362,7 @@ def listdb(dbfile, sort, format):
 
   lister(data)
 
-def test_uniqueness(data):
+def test_id_uniqueness(data):
   dic = {}
 
   for datum in data:
@@ -343,6 +377,27 @@ def test_uniqueness(data):
     return True
 
   return '\n'.join(['duplicated IDs found:'] + map(lambda d: d[0]['id'], dups))
+
+def test_name_uniqueness(data):
+  def format_error(datum):
+    return u'{0}: {1} {2}'.format(datum['id'], datum['title'], datum['suffix'])
+
+  dic = {}
+
+  for datum in data:
+    name = u'{0} {1}'.format(datum['title'], datum['suffix'])
+
+    if not name in dic:
+      dic[name] = [datum]
+    else:
+      dic[name] += datum
+
+  dups = filter(lambda l: len(l) > 1, dic.values())
+
+  if not dups:
+    return True
+
+  return u'\n'.join(['duplicated names found:'] + map(lambda d: format_error(d[0]), dups))
 
 def test_ruby(data):
   def anime_str(datum):
