@@ -362,7 +362,7 @@ def listdb(dbfile, sort, format):
 
   lister(data)
 
-def test_uniqueness(data):
+def test_id_uniqueness(data):
   dic = {}
 
   for datum in data:
@@ -377,6 +377,27 @@ def test_uniqueness(data):
     return True
 
   return '\n'.join(['duplicated IDs found:'] + map(lambda d: d[0]['id'], dups))
+
+def test_name_uniqueness(data):
+  def format_error(datum):
+    return u'{0}: {1} {2}'.format(datum['id'], datum['title'], datum['suffix'])
+
+  dic = {}
+
+  for datum in data:
+    name = u'{0} {1}'.format(datum['title'], datum['suffix'])
+
+    if not name in dic:
+      dic[name] = [datum]
+    else:
+      dic[name] += datum
+
+  dups = filter(lambda l: len(l) > 1, dic.values())
+
+  if not dups:
+    return True
+
+  return u'\n'.join(['duplicated names found:'] + map(lambda d: format_error(d[0]), dups))
 
 def test_ruby(data):
   def anime_str(datum):
