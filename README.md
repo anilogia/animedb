@@ -14,7 +14,7 @@
 
 ## TL;DR
 
-`animedb.yml` がデータベース本体である。今のところ、本データベースを利用・編集する場合、このファイルだけで完結する。
+`animedb.yml` がデータベース本体である。今のところ、本データベースを利用・編集する場合、このファイルだけで完結する。アニメを追加したい場合は、[テンプレート](https://anilogia.github.io/animedb/template)を利用すると良い。
 
 ## 編集規則
 
@@ -68,6 +68,8 @@
 
 本データベースは現状 GitHub 上（[anilogia/animedb](https://github.com/anilogia/animedb)）でのコラボレーションを行っている。
 本データベースに関することなら、データの加筆・修正はもちろん、データの編集方針や今後の活動についての質問・提案の [issue](https://github.com/anilogia/animedb/issues) および [Pull Request](https://github.com/anilogia/animedb/pulls) を歓迎する。
+
+アニメを追加したい場合、[テンプレート](https://anilogia.github.io/animedb/template)が役に立つ。
 
 ## おまけ
 
