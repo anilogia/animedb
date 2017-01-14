@@ -27,3 +27,18 @@ test:
     PYTHONUSERBASE: /mnt/vendor
     PYTHONIOENCODING: UTF-8
   command: ./animedb test
+
+docs:
+  build: ./docs
+  working_dir: /mnt/docs
+  volumes:
+    - .:/mnt
+  ports:
+    - '4000:4000'
+
+docs_setup:
+  build: ./docs
+  working_dir: /mnt/docs
+  volumes:
+    - .:/mnt
+  command: sh -c 'npm install && npm run build'
