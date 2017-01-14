@@ -20,8 +20,8 @@ test:
   override:
     - ./animedb test
   post:
-    - bundle exec jekyll build
-    - bundle exec htmlproofer ./_site --only-4xx --allow-hash-href
+    - cd docs && bundle exec jekyll build
+    - cd docs && bundle exec htmlproofer ./_site --only-4xx --allow-hash-href
 
 deployment:
   production:
