@@ -71,6 +71,8 @@ function updateRandomIds() {
 hljs.initHighlightingOnLoad();
 
 $(() => {
+  $('.button-collapse').sideNav();
+
   updateAnimeTemplate();
   updateRandomIds();
 
