@@ -1,7 +1,16 @@
 machine:
+  environment:
+    USER_NAME: builtinnya
+    USER_EMAIL: builtinnya@gmail.com
   python:
     version: 2.7.12
+  ruby:
+    version: 2.3.3
   timezone: Asia/Tokyo
+
+dependencies:
+  pre:
+    - cd docs && bin/setup
 
 database:
   override:
@@ -10,3 +19,12 @@ database:
 test:
   override:
     - ./animedb test
+  post:
+    - bundle exec jekyll build
+    - bundle exec htmlproofer ./_site --only-4xx --allow-hash-href
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - cd docs && bin/automated
