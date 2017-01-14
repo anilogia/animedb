@@ -21,7 +21,7 @@ test:
     - ./animedb test
   post:
     - cd docs && bundle exec jekyll build
-    - cd docs && bundle exec htmlproofer ./_site --only-4xx --allow-hash-href
+    # - cd docs && bundle exec htmlproofer ./_site --only-4xx --allow-hash-href
 
 deployment:
   production:
