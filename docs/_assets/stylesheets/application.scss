@@ -1,7 +1,5 @@
 @charset "UTF-8";
 
-$roboto-font-path: "../node_modules/materialize-css/fonts/roboto/";
-
 // Mixins
 // @import "materialize-css/sass/components/prefixer";
 @import "materialize-css/sass/components/mixins";
@@ -18,7 +16,7 @@ $roboto-font-path: "../node_modules/materialize-css/fonts/roboto/";
 @import "materialize-css/sass/components/icons-material-design";
 @import "materialize-css/sass/components/grid";
 @import "materialize-css/sass/components/navbar";
-@import "materialize-css/sass/components/roboto";
+@import "roboto";
 @import "materialize-css/sass/components/typography";
 @import "materialize-css/sass/components/cards";
 @import "materialize-css/sass/components/toast";
