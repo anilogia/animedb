@@ -342,7 +342,7 @@ def listdb_csv(data):
         val = val.encode('utf-8')
       datum[key] = val
 
-    writer.writerow({ key: datum[key] for key in CSV_FIELDNAMES })
+    writer.writerow({ key: datum.get(key, '') for key in CSV_FIELDNAMES })
 
 @cli.command('list')
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to list.')
