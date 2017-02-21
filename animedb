@@ -20,6 +20,7 @@ import ruamel.yaml
 from terminaltables import SingleTable
 
 import shortuuid
+import jaconv
 
 DEFAULT_DBFILE = 'animedb.yml'
 DEFAULT_CONVERTED_FILE = 'animedb.converted.yml'
@@ -329,6 +330,19 @@ def listdb_google_ime(data):
 
       if entry not in emitted_entry:
         print(entry)
+        emitted_entry[entry] = True
+
+def listdb_ms_ime(data):
+  emitted_entry = {}
+
+  for datum in data:
+    if datum['ruby'] and datum['title']:
+      ruby = jaconv.kata2hira(re.sub(ur'[ ]', '', datum['ruby'])).replace(u'ゔ', u'ヴ')
+      title = datum['title']
+      entry = u'\t'.join([ruby, title, u'固有名詞']).encode('cp932', 'replace')
+
+      if entry not in emitted_entry:
+        print(entry, end=u'\r\n'.encode('cp932'))
         emitted_entry[entry] = True
 
 def listdb_csv(data):
