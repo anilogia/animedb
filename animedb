@@ -454,5 +454,23 @@ def test(dbfile):
       eprint(error)
     sys.exit(1)
 
+@cli.command('fix_minnnanouta')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to attach IDs to.')
+@click.option('--outputfile', default=DEFAULT_CONVERTED_FILE, type=click.File('w'), help='Output file name.')
+def fix_minnnanouta(dbfile, outputfile):
+  data = load_db_roundtrip(dbfile)
+
+  for datum in data:
+    title = datum.get(u'title')
+    ruby = datum.get(u'ruby')
+
+    if not (title and ruby):
+      continue
+
+    if title.startswith(u'みんなのうた') and not ruby.startswith(u'ミンナノウタ'):
+      datum[u'ruby'] = u'ミンナノウタ ' + ruby
+
+  dump_db_roundtrip(data, outputfile)
+
 if __name__ == '__main__':
   cli()
