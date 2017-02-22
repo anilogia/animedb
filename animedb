@@ -333,16 +333,19 @@ def listdb_google_ime(data):
         emitted_entry[entry] = True
 
 def listdb_ms_ime(data):
+  # Write BOM for Windows
+  print(u'\ufeff'.encode('utf-16le'), end=u'')
+
   emitted_entry = {}
 
   for datum in data:
     if datum['ruby'] and datum['title']:
       ruby = jaconv.kata2hira(re.sub(ur'[ ]', '', datum['ruby'])).replace(u'ゔ', u'ヴ')
       title = datum['title']
-      entry = u'\t'.join([ruby, title, u'固有名詞']).encode('cp932', 'replace')
+      entry = u'\t'.join([ruby, title, u'固有名詞']).encode('utf-16le')
 
       if entry not in emitted_entry:
-        print(entry, end=u'\r\n'.encode('cp932'))
+        print(entry, end=u'\r\n'.encode('utf-16le'))
         emitted_entry[entry] = True
 
 def listdb_csv(data):
