@@ -439,6 +439,49 @@ def test_ruby(data):
 
   return '\n'.join(['{0} invalid rubies found:'.format(len(errors))] + errors)
 
+def test_wavedash(data):
+
+  def check_chars(s):
+    forbidden_chars = { u'\u301c': True, u'\u2013': True }
+    result = {}
+    pos = 1
+
+    for c in s:
+      for forbidden_char in forbidden_chars:
+        if c == forbidden_char:
+          if c not in result:
+            result[c] = []
+
+          result[c].append(pos)
+
+      pos += 1
+
+    return result
+
+  errors = []
+
+  for datum in data:
+    for key, value in datum.iteritems():
+      if not isinstance(value, basestring):
+        continue
+
+      result = check_chars(value)
+
+      for forbidden_char, positions in result.iteritems():
+        errors.append(
+          u'{0}: forbidden character "{1}" in {2} at {3}'.format(
+            datum['id'],
+            forbidden_char,
+            key,
+            ', '.join(map(str, positions))
+          )
+        )
+
+  if not errors:
+    return True
+
+  return '\n' + '\n'.join(errors)
+
 @cli.command()
 @click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to test.')
 def test(dbfile):
