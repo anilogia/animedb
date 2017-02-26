@@ -475,5 +475,13 @@ def fix_minnnanouta(dbfile, outputfile):
 
   dump_db_roundtrip(data, outputfile)
 
+@cli.command('fix_wavedash')
+@click.option('--dbfile', default=DEFAULT_DBFILE, type=click.File('r'), help='Anime DB file to fix.')
+@click.option('--outputfile', default=DEFAULT_CONVERTED_FILE, type=click.File('w'), help='Output file name.')
+def fix_wavedash(dbfile, outputfile):
+  content = dbfile.read().decode('utf-8')
+
+  outputfile.write(content.replace(u'\u301c', u'\uff5e').replace(u'\u2013', u'\u002d').encode('utf-8'))
+
 if __name__ == '__main__':
   cli()
