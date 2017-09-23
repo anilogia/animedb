@@ -1,6 +1,0 @@
-click==6.6
-PyYAML==3.12
-terminaltables==3.1.0
-ruamel.yaml==0.12.14
-shortuuid==0.4.3
-jaconv==0.2.0

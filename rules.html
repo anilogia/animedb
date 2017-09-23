@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>編集規則 | Anilogia Anime DB</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta property="og:title" content="編集規則">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://anilogia.github.io/rules">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="Anilogia Anime DB">
+<meta property="og:image" content="https://anilogia.github.io/animedb/assets/og-image.jpg">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:url" content="https://anilogia.github.io/rules">
+<meta name="twitter:title" content="編集規則">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://anilogia.github.io/animedb/assets/og-image.jpg">
+
+<link rel="apple-touch-icon" href="/animedb/assets/apple-touch-icon.png">
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<link type="text/css" rel="stylesheet" href="/animedb/assets/application.css">
+
+</head>
+<body>
+  <!--[if lt IE 8]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong>
+      browser. Please <a href="http://browsehappy.com/">upgrade your browser</a>
+      to improve your experience.</p>
+  <![endif]-->
+
+  <main role="main">
+    <nav class="grey lighten-2" role="navigation">
+  <div class="nav-wrapper container">
+    <a href="/animedb/" class="brand-logo">
+      <img src="/animedb/assets/logo.png" width="45" height="45" />
+    </a>
+    <ul class="right hide-on-med-and-down">
+      <li>
+        <a href="https://github.com/anilogia/animedb" class="grey-text text-darken-4">
+          GitHub
+        </a>
+      </li>
+    </ul>
+
+    <ul id="nav-mobile" class="side-nav">
+      <li><a href="https://github.com/anilogia/animedb">GitHub</a></li>
+    </ul>
+    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+  </div>
+</nav>
+
+    <div class="container doc-container">
+      <h1 id="anime-db-編集規則">Anime DB 編集規則</h1>
+
+<p>識別名、タイトル、よみがな、放送日時など、多くの項目の記入において、何らかの判断基準が要求される。データベースの有用性・一貫性・整合性を保つために必要とされるそれらの判断基準は自明ではない。
+ここでは、編集に際して判断基準とするべき Anime DB の編集規則を述べる。</p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#識別名について">識別名について</a></li>
+  <li><a href="#タイトルtitleについて">タイトル（title）について</a></li>
+  <li><a href="#よみがなrubyについて">よみがな（ruby）について</a></li>
+</ul>
+
+<h2 id="識別名について">識別名について</h2>
+
+<p>識別名は、作品を識別するための名前である。そのため、Anime DB 内で必ず一意となる。
+識別名は、作品タイトルと添え名（suffix）から構成される。添え名は、「第2期」のように、同名の作品同士を区別するために主に Anime DB の都合で導入される。</p>
+
+<p>識別名は可能な限り変更してはならない。同名の作品が存在する場合は、後で追加された方に何らかの添え名をつけて識別名の一意性を保つこと。</p>
+
+<h2 id="タイトルtitleについて">タイトル（title）について</h2>
+
+<p>タイトル（title）は、作品や各エピソードにつけられた名前である。どこからどこまでを作品の名前とするかが問題となる。問題となるケースについて以下で述べる。</p>
+
+<ul>
+  <li>同一シリーズの OVA などにおけるタイトルは、シリーズ名 + 「サブタイトル」という形式にする
+    <ul>
+      <li>例：「それいけ!アンパンマン おともだちシリーズ/ファンタジー「バタコさんと空飛ぶマフラー」」</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="よみがなrubyについて">よみがな（ruby）について</h2>
+
+<p>よみがな（ruby）は、作品や各エピソードのタイトル（title）の読み方である。prefix や suffix の読み方は含まない。また、発声する部分のみを表すため、例えば「ハイキュー!! 烏野高校VS白烏沢学園高校」の「!!」といった記号の読み方は含まない。</p>
+
+<p>よみがなは<strong>全角カタカナ</strong>（<code class="highlighter-rouge">[ァ-ヴ]</code>）と<strong>半角スペース</strong>、そして<strong>長音記号</strong>（<code class="highlighter-rouge">ー</code>）のみからなる。半角スペースを2つ以上並べたり、長音記号を2つ以上並べることはできない。また、半角スペースは先頭あるいは末尾に存在してはならない。長音記号が先頭に存在してはならない。</p>
+
+<p>その他、個別の事例での判断を以下に示す。</p>
+
+<ul>
+  <li>「VS」「vs」の読み方は、公式の資料（Webサイト、PV、商品紹介など）で特に触れられてない限り、「<strong>バーサス</strong>」とする。
+    <ul>
+      <li>例：「ハイキュー!! 烏野高校VS白烏沢学園高校」→「ハイキューカラスノコウコウバーサスシラトリザワガクエンコウコウ」</li>
+      <li>例：「ルパン三世 VS 名探偵コナン THE MOVIE」→BD/DVDの商品紹介（<a href="https://www.amazon.co.jp/dp/B00J2MZAJS">Amazon</a>）のキャッチコピーに「ヴァーサス」という記述があるので、「ルパンサンセイ ヴァーサス メイタンテイコナン ザムービー」</li>
+    </ul>
+  </li>
+</ul>
+
+    </div>
+    <footer class="page-footer grey lighten-2">
+  <div class="footer-copyright">
+    <div class="container">
+      Made by <a class="anilogia-red" href="https://github.com/anilogia/">Anilogia</a>
+    </div>
+  </div>
+</footer>
+
+  </main>
+
+  <script type="text/javascript" src="/animedb/assets/vendor.js"></script>
+<script type="text/javascript" src="/animedb/assets/application.js"></script>
+
+
+  <script>
+    window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+    ga('create','UA-90310463-1','auto');ga('send','pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+
+</body>
+</html>

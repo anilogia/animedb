@@ -1,8 +1,0 @@
-!.keep
-*.DS_Store
-*.sass-cache
-/.asset-cache/*
-/node_modules/*
-/_site/*
-/_vendor/*
-/_assets/javascripts/bundle.js
